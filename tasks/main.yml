@@ -23,13 +23,13 @@
 
 - name: install NTP
   yum:
-    name: {{ ntp_package }}
+    name: '{{ ntp_package }}'
     state: installed
   when: not ntp_use_chrony
 
 - name: install Chrony
   yum:
-    name: {{ ntp_chrony_package }}
+    name: '{{ ntp_chrony_package }}'
     state: installed
   when: ntp_use_chrony
 
@@ -45,15 +45,14 @@
 
 - name: Ensure NTP is running and enabled as configured.
   service:
-    name: "{{ ntp_daemon }}"
+    name: '{{ ntp_daemon }}'
     state: started
     enabled: yes
   when: ntp_enabled
 
 - name: Ensure NTP is stopped and disabled as configured.
   service:
-    name: "{{ ntp_daemon }}"
+    name: '{{ ntp_daemon }}'
     state: stopped
     enabled: no
   when: not ntp_enabled
-
