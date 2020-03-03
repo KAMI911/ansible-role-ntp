@@ -25,13 +25,6 @@
   yum:
     name: '{{ ntp_package }}'
     state: installed
-  when: not ntp_use_chrony
-
-- name: install Chrony
-  yum:
-    name: '{{ ntp_chrony_package }}'
-    state: installed
-  when: ntp_use_chrony
 
 - name: generate ntp.conf file
   template: src=ntp.conf.j2 dest=/etc/ntp.conf
