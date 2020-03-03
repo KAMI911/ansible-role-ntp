@@ -1,5 +1,5 @@
 ---
 ntp_use_chrony: true
 
-ntp_daemon: '{{ ntp_chrony_package }}'
-ntp_package: '{{ ntp_chrony_daemon }}'
+ntp_daemon: '{{ ntp_chrony_daemon }}'
+ntp_package: '{{ ntp_chrony_package }}'
