@@ -1,6 +1,10 @@
 ---
-- name: Include OS-specific variables.
+- name: include OS-specific variables.
   include_vars: "{{ ansible_os_family }}.yml"
+
+- name: include variables when have to use Chrony
+  include_vars: "chrony.yml"
+  when: linux_ad_ansible_distribution_major_version|int >= 8 and ansible_os_family == 'RedHat'
 
 - name: Set the correct timezone.
   file:
@@ -17,17 +21,27 @@
     force: yes
   when: ansible_os_family == 'Debian'
 
-- name: Install NTP (RedHat).
-  yum: name=ntp state=installed
-  when: ansible_os_family == 'RedHat'
+- name: install NTP
+  yum:
+    name: {{ ntp_package }}
+    state: installed
+  when: not ntp_use_chrony
 
-- name: Install NTP (Debian).
-  apt: name=ntp state=installed
-  when: ansible_os_family == 'Debian'
+- name: install Chrony
+  yum:
+    name: {{ ntp_chrony_package }}
+    state: installed
+  when: ntp_use_chrony
 
-- name: Install NTP (FreeBSD).
-  pkgng: name=ntp state=present
-  when: ansible_os_family == 'FreeBSD'
+- name: generate ntp.conf file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  notify: restart ntp
+  when: ntp_manage_config and not ntp_use_chrony
+
+- name: generate chrony.conf file
+  template: src=chrony.conf.j2 dest=/etc/chrony.conf
+  notify: restart ntp
+  when: ntp_manage_config and ntp_use_chrony
 
 - name: Ensure NTP is running and enabled as configured.
   service:
@@ -43,7 +57,3 @@
     enabled: no
   when: not ntp_enabled
 
-- name: Generate ntp.conf file
-  template: src=ntp.conf.j2 dest=/etc/ntp.conf
-  notify: restart ntp
-  when: ntp_manage_config
