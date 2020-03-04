@@ -6,7 +6,7 @@
   include_vars: "chrony.yml"
   when: ansible_distribution_major_version|int >= 8 and ansible_os_family == 'RedHat'
 
-- name: Set the correct timezone.
+- name: set the correct timezone.
   file:
     src: "/usr/share/zoneinfo/{{ ntp_timezone }}"
     dest: /etc/localtime
@@ -14,7 +14,7 @@
     force: yes
 
 # Debian family OSes also have an /etc/timezone file.
-- name: Set timezone in /etc/timezone file.
+- name: set timezone in /etc/timezone file.
   template:
     src: timezone.j2
     dest: /etc/timezone
@@ -36,14 +36,14 @@
   notify: restart ntp
   when: ntp_manage_config and ntp_use_chrony
 
-- name: Ensure NTP is running and enabled as configured.
+- name: ensure NTP is running and enabled as configured.
   service:
     name: '{{ ntp_daemon }}'
     state: started
     enabled: yes
   when: ntp_enabled
 
-- name: Ensure NTP is stopped and disabled as configured.
+- name: ensure NTP is stopped and disabled as configured.
   service:
     name: '{{ ntp_daemon }}'
     state: stopped
