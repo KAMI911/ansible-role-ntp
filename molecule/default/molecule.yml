@@ -1,0 +1,42 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: ntp-centos6
+    image: geerlingguy/docker-centos6-ansible
+    image_version: latest
+    privileged: true
+  - name: ntp-centos6_11
+    image: geerlingguy/docker-centos6-ansible
+    image_version: latest
+    privileged: true
+  - name: ntp-centos7
+    image: milcom/centos7-systemd
+    image_version: latest
+    privileged: true
+  - name: ntp-centos7-chrony
+    image: milcom/centos7-systemd
+    image_version: latest
+    privileged: true
+    groups:
+      - chrony
+  - name: ntp-centos8
+    image: kami911/docker-centos8-ansible
+    image_version: latest
+    privileged: true
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  inventory:
+    group_vars:
+      chrony:
+        ntp_use_chrony: true
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
