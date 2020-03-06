@@ -22,7 +22,7 @@
   when: ansible_os_family == 'Debian'
 
 - name: install NTP
-  yum:
+  package:
     name: '{{ ntp_package }}'
     state: installed
 
