@@ -25,6 +25,7 @@
   package:
     name: '{{ ntp_package }}'
     state: installed
+  notify: restart ntp
 
 - name: generate ntp.conf file
   template: src=ntp.conf.j2 dest=/etc/ntp.conf
@@ -35,13 +36,6 @@
   template: src=chrony.conf.j2 dest=/etc/chrony.conf
   notify: restart ntp
   when: ntp_manage_config and ntp_use_chrony
-
-- name: ensure NTP is running and enabled as configured.
-  service:
-    name: '{{ ntp_daemon }}'
-    state: started
-    enabled: yes
-  when: ntp_enabled
 
 - name: ensure NTP is stopped and disabled as configured.
   service:
